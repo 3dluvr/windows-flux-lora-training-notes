@@ -1,5 +1,5 @@
 # Windows FLUX LoRA Training Notes
-An ever growing collection of random notes on training FLUX LoRA in Window, and resolving various issues along the way.
+An ever growing collection of random notes on training FLUX LoRA in Window, and resolving various issues along the way. The main idea here is not to fix any of the dependent modules, but to get going fast and without delay.
 
 - In general training in Windows is an utter hit-and-miss because major Python modules are not coded with Windows in mind (Accelerate, PyTorch, Flash Attention...);
 - Apparently Kohya-SS sd-scripts foe training Flux are not working correctly; this means anything using them (Fluxgym, etc.) will also not work well. At least one thing needs to be fixed in ```train_util.py:L5353``` (the Version check);
@@ -30,8 +30,9 @@ Patching is needed because the URL does not appear to be exposed anywhere so one
 
 Another person has kindly taken on a task of providing pre-compiled wheels for flash_attn module with CUDA on their GH at https://github.com/kingbri1/flash-attention/releases. The releases there include major Python versions, and the last several PyTorch versions. Thank-you for doing it!
 
-*set USE_FLASH_ATTENTION=1* does work when you set it in your venv, and install the above mentioned flash_attn module with CUDA compiled in. But that's not enough because ```flash_attn_2_cuda.cp312-win_amd64.pyd``` still fails to find deps:
+*set USE_FLASH_ATTENTION=1* does work when you set it in your venv, and install the above mentioned flash_attn module with CUDA compiled in. But that's not enough because ```flash_attn_2_cuda.cp312-win_amd64.pyd``` still fails to find deps and throws a fit: ```DLL load failed while importing flash_attn_2_cuda: The specified module could not be found.```
 
+That .pyd depends on the following dlls:
 ```
 api-ms-win-crt-heap-l1-1-0.dll       Loaded successfully
 api-ms-win-crt-math-l1-1-0.dll       Loaded successfully
@@ -50,7 +51,7 @@ torch_python.dll                     Error 126: The specified module could not b
 VCRUNTIME140.dll                     Loaded successfully
 VCRUNTIME140_1.dll                   Loaded successfully
 ```
-So, more patching is needed, inside ```Lib\site-packages\flash_attnflash_attn_interface.py``` It needs to know where to find those dlls (they come from PyTorch).
+So, more patching is needed, inside ```Lib\site-packages\flash_attnflash_attn_interface.py``` It needs to know where to find those missing dlls (they come from PyTorch). Before Python 3.8, one could simply add the paths to the system, but not anymore - now have to use ```os.add_dll_directory(path)``` for that purpose. The paths that need adding are to PyTorch **lib** folder as well as **Library\bin** folder of your venv.
 
 TBC
 
