@@ -2,7 +2,8 @@
 An ever growing collection of random notes on training FLUX LoRA in Window, and resolving various issues along the way. The main idea here is not to fix any of the dependent modules, but to get going fast and without delay.
 
 - In general training in Windows is an utter hit-and-miss because major Python modules are not coded with Windows in mind (Accelerate, PyTorch, Flash Attention...);
-- Apparently Kohya-SS sd-scripts foe training Flux are not working correctly; this means anything using them (Fluxgym, etc.) will also not work well. At least one thing needs to be fixed in ```train_util.py:L5353``` (the Version check);
+- Some people say that Kohya-SS sd-scripts for training Flux are not working correctly; this also means anything using them (Fluxgym, etc.) will also not work well. At least one thing needs to be fixed in ```train_util.py:L5353``` (the Version check) so the line reads ```"env://?use_libuv=False" if os.name == "nt" and torch.__version__ >= "2.4.0" else None```
+- From my tests, I'm getting better results with Kohya-SS sd-scripts than with OneTrainer. Bonus with sd-scripts is that through Accelerate it uses distributed torch which allows training on more than one GPU. So far I haven't seen OneTrainer using more than one GPU in my system.
 - Not all models are made the same, and not all conversions worked out well. Yet, there are many copies of the copies that are badly done and finding the right model that actually works correctly (aligns with the original) is difficult. There are many de-distillations and abliterations and they all claim one thing or another.
 
 ## PyTorch
@@ -13,7 +14,7 @@ Most recent versions have advanced the distributed backend (Rendezvous) in favou
 
 Putting *set USE_LIBUV=0* in your venv is meaningless because it only applies during compilation of PyTorch, and compiling it in Windows is a real pain in the butt. So you still get that ```RuntimeError: use_libuv was requested but PyTorch was build without libuv support```
 
-### patched files
+### patched files (this probably only applies to distributed training with mutliple GPUs in the system)
 
 Lib\site-packages\torch\distributed\rendezvous.py
 
