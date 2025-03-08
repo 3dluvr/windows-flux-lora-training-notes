@@ -16,6 +16,15 @@ Putting *set USE_LIBUV=0* in your venv is meaningless because it only applies du
 
 ### patched files (this probably only applies to distributed training with mutliple GPUs in the system)
 
+Accelerate needs to pass the ```backend="gloo"``` for Windows somewhere, but for the time being
+
+Lib\site-packages\torch\distributed\distributed_c10d.py:L1674 we'll force it
+```
+if os.name == "nt":
+    backend = "gloo"
+```
+Then...
+
 Lib\site-packages\torch\distributed\rendezvous.py
 
 TCPStore( ... needs ```use_libuv=False,```
