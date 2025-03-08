@@ -8,7 +8,7 @@ An ever growing collection of random notes on training FLUX LoRA in Window, and 
 
 ## PyTorch
 
-Many people think there's some kind of a secret formulae/mix that will get their setup working. They resort to installing old versions of PyTorch and CUDA (e.g. torch-2.3.1+cu118 from https://pytorch.org/get-started/previous-versions/) because they say that's where it works and after that it doesn't. The confusion comes from the fact that as these modules were being worked on by the devs and many bugs fixed, further divergence from Windows had occurred. Unfortunately, the only way to fix them is to patch the code and force certain things to play nice in Windows.
+Many people think there's some kind of a secret formula/mix of modules that will get their setup working. They resort to installing old versions of PyTorch and CUDA (e.g. torch-2.3.1+cu118 from https://pytorch.org/get-started/previous-versions/) because they say that's where it works and after that it doesn't. The confusion comes from the fact that as these modules were being worked on by the devs and many bugs fixed, further divergence from Windows had occurred. Unfortunately, the only way to fix them is to patch the code and force certain things to play nice in Windows.
 
 Most recent versions have advanced the distributed backend (Rendezvous) in favour of the old c10d (now legacy), which apparently did work in Windows at some point in the past. Thus those people mentioned above suggesting the use of torch-2.3.1+cu118 for example.
 
@@ -26,6 +26,30 @@ TCPStore( ... needs ```use_libuv=False,```
 
 Patching is needed because the URL does not appear to be exposed anywhere so one can't add the request parameter use_libuv=False to it. master_port and master_host can be set from the environment, but that's about it.
 
+To test Distributed Processing in Windows, easiest sample code would be:
+
+```
+import os
+import torch.distributed as dist
+
+#dist_url = 'tcp://127.0.0.1:23456?use_libuv=False'
+
+os.environ['MASTER_ADDR'] = '127.0.0.1'
+os.environ['MASTER_PORT'] = '23456'
+dist_url = 'env://?use_libuv=False'
+
+#dist_url = 'file:///c:/temp/torch_dp'
+
+dist.init_process_group(
+   backend = 'gloo',
+   rank=0,
+   init_method=dist_url,
+   world_size=1)
+print("DP is working")
+```
+Uncommenting one of the lines/blocks that describe the ```dist_url```, obviously ```tcp://``` and ```env://``` are similar/identical, except that the addr/port come from different sources. The ```file://``` might be the most ideal one, although there are suggestions not to use it (why not?) The key is the **backend** which needs to be ```gloo``` because ```nccl``` isn't supported in Windows.
+
+More on the TCP backend with Libuv at https://pytorch.org/tutorials/intermediate/TCPStore_libuv_backend.html
 
 ## Flash Attention with CUDA
 
