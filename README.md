@@ -164,4 +164,4 @@ deepspeed wheel compiled w. ...... torch 2.6, cuda 12.4
 shared memory (/dev/shm) size .... UNKNOWN
 ```
 
-Uploadedthe **deepspeed-0.16.4+cu124torch2.6.0-cp312-cp312-win_amd64.whl** in the Releases of this repo.
+Uploaded **deepspeed-0.16.4+cu124torch2.6.0-cp312-cp312-win_amd64.whl** in the Releases of this repo. You must have CUDA 124 toolkit installed, etc.
