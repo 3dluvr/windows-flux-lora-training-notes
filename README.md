@@ -96,3 +96,72 @@ TBA
 ## Triton
 
 Another kind person has gone out of their way to keep Triton wheels for Windows up to date on their GH at https://github.com/woct0rdho/triton-windows/releases. Thank-you for doing it!
+
+## DeepSpeed
+
+I compiled DeepSpeed 0.16.4 for Python3.12 with CUDA 12.4, PyTorch 2.6.0 and Triton 3.1.0...it seems to be ok based on the ```ds_report```
+
+```
+[2025-03-08 19:58:11,587] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+test.c
+LINK : fatal error LNK1181: cannot open input file 'aio.lib'
+test.c
+LINK : fatal error LNK1181: cannot open input file 'cufile.lib'
+W0308 19:58:15.602000 3136 Lib\site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+--------------------------------------------------
+DeepSpeed C++/CUDA extension op report
+--------------------------------------------------
+NOTE: Ops not installed will be just-in-time (JIT) compiled at
+      runtime if needed. Op compatibility means that your system
+      meet the required dependencies to JIT install the op.
+--------------------------------------------------
+JIT compiled ops requires ninja
+ninja .................. [OKAY]
+--------------------------------------------------
+op name ................ installed .. compatible
+--------------------------------------------------
+test.c
+LINK : fatal error LNK1181: cannot open input file 'aio.lib'
+ [WARNING]  async_io requires the dev libaio .so object and headers but these were not found.
+ [WARNING]  If libaio is already installed (perhaps from source), try setting the CFLAGS and LDFLAGS environment variables to where it can be found.
+async_io ............... [NO] ....... [NO]
+fused_adam ............. [YES] ...... [OKAY]
+cpu_adam ............... [YES] ...... [OKAY]
+cpu_adagrad ............ [YES] ...... [OKAY]
+cpu_lion ............... [YES] ...... [OKAY]
+ [WARNING]  Please specify the CUTLASS repo directory as environment variable $CUTLASS_PATH
+evoformer_attn ......... [NO] ....... [NO]
+ [WARNING]  FP Quantizer is using an untested triton version (3.1.0), only 2.3.(0, 1) and 3.0.0 are known to be compatible with these kernels
+fp_quantizer ........... [NO] ....... [NO]
+fused_lamb ............. [YES] ...... [OKAY]
+fused_lion ............. [YES] ...... [OKAY]
+test.c
+LINK : fatal error LNK1181: cannot open input file 'cufile.lib'
+gds .................... [NO] ....... [NO]
+transformer_inference .. [YES] ...... [OKAY]
+inference_core_ops ..... [YES] ...... [OKAY]
+cutlass_ops ............ [NO] ....... [OKAY]
+quantizer .............. [YES] ...... [OKAY]
+ragged_device_ops ...... [NO] ....... [OKAY]
+ragged_ops ............. [YES] ...... [OKAY]
+random_ltd ............. [YES] ...... [OKAY]
+ [WARNING]  sparse_attn requires a torch version >= 1.5 and < 2.0 but detected 2.6
+ [WARNING]  using untested triton version (3.1.0), only 1.0.0 is known to be compatible
+sparse_attn ............ [NO] ....... [NO]
+spatial_inference ...... [YES] ...... [OKAY]
+transformer ............ [YES] ...... [OKAY]
+stochastic_transformer . [YES] ...... [OKAY]
+--------------------------------------------------
+DeepSpeed general environment info:
+torch install path ............... ['G:\\FluxGym\\Lib\\site-packages\\torch']
+torch version .................... 2.6.0+cu124
+deepspeed install path ........... ['G:\\FluxGym\\Lib\\site-packages\\deepspeed']
+deepspeed info ................... 0.16.4+unknown, unknown, unknown
+torch cuda version ............... 12.4
+torch hip version ................ None
+nvcc version ..................... 12.4
+deepspeed wheel compiled w. ...... torch 2.6, cuda 12.4
+shared memory (/dev/shm) size .... UNKNOWN
+```
+
+Uploadedthe **deepspeed-0.16.4+cu124torch2.6.0-cp312-cp312-win_amd64.whl** in the Releases of this repo.
