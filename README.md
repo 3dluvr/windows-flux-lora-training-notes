@@ -89,11 +89,13 @@ So, more patching is needed, inside ```Lib\site-packages\flash_attnflash_attn_in
 
 #### Compiling
 
-```git clone https://github.com/Dao-AILab/flash-attention.git
+```
+git clone https://github.com/Dao-AILab/flash-attention.git
 cd csrc
 git clone https://github.com/NVIDIA/cutlass.git
 cd ..
-python setup.py bdist_wheel```
+python setup.py bdist_wheel
+```
 
 TBC
 
