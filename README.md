@@ -87,6 +87,14 @@ VCRUNTIME140_1.dll                   Loaded successfully
 ```
 So, more patching is needed, inside ```Lib\site-packages\flash_attnflash_attn_interface.py``` It needs to know where to find those missing dlls (they come from PyTorch). Before Python 3.8, one could simply add the paths to the system, but not anymore - now have to use ```os.add_dll_directory(path)``` for that purpose. The paths that need adding are to PyTorch **lib** folder as well as **Library\bin** folder of your venv.
 
+### Compiling
+
+git clone https://github.com/Dao-AILab/flash-attention.git
+cd csrc
+git clone https://github.com/NVIDIA/cutlass.git
+cd ..
+python setup.py bdist_wheel
+
 TBC
 
 ## Accelerate
