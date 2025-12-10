@@ -95,6 +95,8 @@ cd csrc
 git clone https://github.com/NVIDIA/cutlass.git
 cd ..
 python setup.py bdist_wheel
+or
+pip wheel . -w wheels
 ```
 
 TBC
