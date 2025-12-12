@@ -91,9 +91,8 @@ So, more patching is needed, inside ```Lib\site-packages\flash_attnflash_attn_in
 
 ```
 git clone https://github.com/Dao-AILab/flash-attention.git
-cd csrc
-git clone https://github.com/NVIDIA/cutlass.git
-cd ..
+cd flash-attention
+git submodule update --init --recursive
 python setup.py bdist_wheel
 or
 pip wheel . -w wheels
